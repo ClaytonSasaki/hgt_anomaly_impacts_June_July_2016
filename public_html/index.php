@@ -11,7 +11,7 @@
 <body>
 
 <div class="page-header mb-0">
-    <h4 class="fw-bold mb-1">500 mb Geopotential Height Anomaly</h4>
+    <h4 class="fw-bold mb-1">500 mb Height Anomaly and Surface Impacts</h4>
     <p>June &amp; July 2016 &nbsp;&bull;&nbsp; vs. 1991–2020 Climatology &nbsp;&bull;&nbsp; NCEP/NCAR Reanalysis 1</p>
 </div>
 
@@ -83,27 +83,20 @@
                 "June" => ["06", "june"],
                 "July" => ["07", "july"],
             ];
-            $surf_views = [
-                "Global"        => "",
-                "North America" => "_na",
-            ];
             ?>
 
             <?php foreach ($surface_vars as $var_label => $var): ?>
             <h5 class="fw-semibold mt-4 mb-1"><?php echo $var_label; ?></h5>
-            <?php foreach ($surf_views as $view => $suffix): ?>
-            <h6 class="text-center fw-semibold mt-3 mb-2 text-secondary"><?php echo $view; ?></h6>
             <div class="row g-4">
                 <?php foreach ($surf_months as $month => [$num, $slug]): ?>
                 <div class="col-12 col-xl-6">
-                    <img src="images/<?php echo $var['stem']; ?>_2016_<?php echo $num; ?>_<?php echo $slug . $suffix; ?>.png"
+                    <img src="images/<?php echo $var['stem']; ?>_2016_<?php echo $num; ?>_<?php echo $slug; ?>_na.png"
                          class="img-fluid rounded shadow-sm d-block mx-auto"
-                         alt="<?php echo "$month 2016 $var_label $view"; ?>">
+                         alt="<?php echo "$month 2016 $var_label North America"; ?>">
                     <p class="static-caption"><?php echo $var['caption']; ?></p>
                 </div>
                 <?php endforeach; ?>
             </div>
-            <?php endforeach; ?>
             <?php endforeach; ?>
 
         </div><!-- /surface pane -->
