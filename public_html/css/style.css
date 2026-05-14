@@ -1,0 +1,18 @@
+body { background: #f0f2f5; }
+
+.page-header { background: #1a2b45; color: #fff; padding: 1.25rem 1.5rem; }
+.page-header p { color: #9fb3cc; margin: 0; font-size: .9rem; }
+
+#map { height: 580px; }
+
+.tab-content {
+    background: #fff;
+    border: 1px solid #dee2e6;
+    border-top: none;
+    border-radius: 0 0 .375rem .375rem;
+    padding: 1.25rem;
+}
+
+.nav-tabs { border-color: #dee2e6; }
+
+.static-caption { font-size: .8rem; color: #6c757d; margin-top: .4rem; text-align: center; }
