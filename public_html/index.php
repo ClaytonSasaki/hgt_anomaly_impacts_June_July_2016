@@ -68,35 +68,54 @@
         <!-- ── Surface Analysis ── -->
         <div class="tab-pane fade" id="pane-surface" role="tabpanel">
 
-            <?php
-            $surface_vars = [
-                "2m Temperature Anomaly" => [
-                    "stem"    => "tmp2m_anom",
-                    "caption" => "Blue = cooler than normal &nbsp;|&nbsp; Red = warmer than normal &nbsp;|&nbsp; Units: °F",
-                ],
-                "Precipitation Anomaly" => [
-                    "stem"    => "prate_anom",
-                    "caption" => "Brown = drier than normal &nbsp;|&nbsp; Green = wetter than normal &nbsp;|&nbsp; Units: in/month",
-                ],
-            ];
-            $surf_months = [
-                "June" => ["06", "june"],
-                "July" => ["07", "july"],
-            ];
-            ?>
+            <div class="d-flex flex-wrap align-items-center gap-3 my-3">
 
-            <?php foreach ($surf_months as $month => [$num, $slug]): ?>
-            <div class="row g-4 mt-2">
-                <?php foreach ($surface_vars as $var_label => $var): ?>
-                <div class="col-12 col-xl-6">
-                    <img src="images/<?php echo $var['stem']; ?>_2016_<?php echo $num; ?>_<?php echo $slug; ?>_na.png"
-                         class="img-fluid rounded shadow-sm d-block mx-auto"
-                         alt="<?php echo "$month 2016 $var_label North America"; ?>">
-                    <p class="static-caption"><?php echo $var['caption']; ?><br>Gold outline = Corn Belt</p>
+                <div class="btn-group" role="group" aria-label="Zoom selector">
+                    <input type="radio" class="btn-check" name="surf-zoom" id="surfZoomNA" value="na" autocomplete="off" checked>
+                    <label class="btn btn-outline-secondary" for="surfZoomNA">North America</label>
+                    <input type="radio" class="btn-check" name="surf-zoom" id="surfZoomCONUS" value="conus" autocomplete="off">
+                    <label class="btn btn-outline-secondary" for="surfZoomCONUS">CONUS</label>
                 </div>
-                <?php endforeach; ?>
+
+                <div class="dropdown">
+                    <button class="btn btn-outline-secondary dropdown-toggle" type="button"
+                            id="monthsDropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside">
+                        Months: Jun, Jul
+                    </button>
+                    <ul class="dropdown-menu p-2" style="min-width:130px">
+                        <li><label class="dropdown-item d-flex gap-2">
+                            <input type="checkbox" class="surf-month" value="05" data-label="May"> May
+                        </label></li>
+                        <li><label class="dropdown-item d-flex gap-2">
+                            <input type="checkbox" class="surf-month" value="06" data-label="Jun" checked> June
+                        </label></li>
+                        <li><label class="dropdown-item d-flex gap-2">
+                            <input type="checkbox" class="surf-month" value="07" data-label="Jul" checked> July
+                        </label></li>
+                        <li><label class="dropdown-item d-flex gap-2">
+                            <input type="checkbox" class="surf-month" value="08" data-label="Aug"> August
+                        </label></li>
+                    </ul>
+                </div>
+
+                <div class="dropdown">
+                    <button class="btn btn-outline-secondary dropdown-toggle" type="button"
+                            id="varsDropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside">
+                        Vars: Temp, Precip
+                    </button>
+                    <ul class="dropdown-menu p-2" style="min-width:210px">
+                        <li><label class="dropdown-item d-flex gap-2">
+                            <input type="checkbox" class="surf-var" value="tmp2m_anom" data-label="Temp" checked> 2m Temperature
+                        </label></li>
+                        <li><label class="dropdown-item d-flex gap-2">
+                            <input type="checkbox" class="surf-var" value="prate_anom" data-label="Precip" checked> Precipitation
+                        </label></li>
+                    </ul>
+                </div>
+
             </div>
-            <?php endforeach; ?>
+
+            <div id="surface-grid"></div>
 
         </div><!-- /surface pane -->
 
@@ -141,6 +160,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="js/map.js"></script>
+<script src="js/surface.js"></script>
 
 </body>
 </html>
