@@ -60,6 +60,31 @@ legend.onAdd = function() {
 };
 legend.addTo(map);
 
+// ── Corn Belt GeoJSON ─────────────────────────────────────────────────────────
+var cornBeltLayer = null;
+
+fetch('corn_belt.geojson')
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+        cornBeltLayer = L.geoJSON(data, {
+            style: {
+                color: '#E6A817',
+                weight: 2.5,
+                fillOpacity: 0,
+                opacity: 0.9
+            }
+        }).addTo(map);
+    });
+
+document.getElementById('cornBeltToggle').addEventListener('change', function() {
+    if (!cornBeltLayer) return;
+    if (this.checked) {
+        cornBeltLayer.addTo(map);
+    } else {
+        map.removeLayer(cornBeltLayer);
+    }
+});
+
 // Fix map size when tab becomes visible
 document.getElementById('tab-interactive').addEventListener('shown.bs.tab', function() {
     map.invalidateSize();

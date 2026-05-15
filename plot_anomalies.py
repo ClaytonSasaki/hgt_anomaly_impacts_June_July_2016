@@ -11,11 +11,14 @@ Output: PNG images saved to public_html/images/
 import cartopy.crs as ccrs
 import cartopy.feature as cfeature
 import cartopy.util as cutil
+import json
 import matplotlib.patheffects as pe
 import matplotlib.pyplot as plt
 import numpy as np
 import xarray as xr
+from cartopy.feature import ShapelyFeature
 from pathlib import Path
+from shapely.geometry import shape as shapely_shape
 
 DATA_DIR = Path("data")
 OUT_DIR  = Path("public_html/images")
@@ -32,6 +35,21 @@ states = cfeature.NaturalEarthFeature(
     scale="50m",
     facecolor="none"
 )
+
+# ── Corn Belt feature — loaded from corn_belt.geojson (run make_corn_belt.py first) ──
+_cb_path = OUT_DIR.parent / "corn_belt.geojson"
+if _cb_path.exists():
+    with open(_cb_path) as _f:
+        _cb_geoms = [shapely_shape(feat["geometry"])
+                     for feat in json.load(_f)["features"]]
+    corn_belt_feature = ShapelyFeature(
+        _cb_geoms, ccrs.PlateCarree(),
+        facecolor="none", edgecolor="#E6A817", linewidth=2.2
+    )
+else:
+    corn_belt_feature = None
+    print("Warning: corn_belt.geojson not found — run make_corn_belt.py first. "
+          "Corn Belt overlay will be skipped.")
 
 
 def prep_data(da):
@@ -84,7 +102,7 @@ def plot_global(data, lons, lats, fill_levs, cmap, title_left, cbar_label,
 
 
 def plot_na(data, lons, lats, fill_levs, cmap, title_left, cbar_label,
-            line_data=None, line_levs=None):
+            line_data=None, line_levs=None, corn_belt_feat=None):
     lcc = ccrs.LambertConformal(central_longitude=-96, standard_parallels=(33, 45))
     fig, ax = plt.subplots(figsize=(12, 9), subplot_kw={"projection": lcc})
     ax.set_extent([-165, -55, 15, 75], crs=ccrs.PlateCarree())
@@ -99,6 +117,9 @@ def plot_na(data, lons, lats, fill_levs, cmap, title_left, cbar_label,
     ax.add_feature(cfeature.COASTLINE.with_scale("50m"), linewidth=0.8)
     ax.add_feature(cfeature.BORDERS.with_scale("50m"),   linewidth=0.6)
     ax.add_feature(states,                               linewidth=0.4)
+
+    if corn_belt_feat is not None:
+        ax.add_feature(corn_belt_feat)
 
     gl = ax.gridlines(draw_labels=True, linewidth=0.4,
                       color="gray", alpha=0.5, linestyle="--")
@@ -184,7 +205,8 @@ for month_num, month_name in MONTHS.items():
     # blue = below normal heights, red = above normal heights
     fig_na = plot_na(anom_c, lons_c, lats, fill_levs_hgt, "RdBu_r", title,
                      "500 mb Height Anomaly (m)",
-                     line_data=hgt_c / 10, line_levs=line_levs_hgt)
+                     line_data=hgt_c / 10, line_levs=line_levs_hgt,
+                     corn_belt_feat=corn_belt_feature)
     
     fig_na.savefig(OUT_DIR / f"{fname}_na.png", dpi=150, bbox_inches="tight", facecolor="white")
     plt.close(fig_na)
@@ -230,7 +252,8 @@ for month_num, month_name in MONTHS.items():
     # Plot anomalies (°F) on North America map
     # Blue = cooler than normal, Red = warmer than normal
     fig_na = plot_na(data_c, lons_c, lats, fill_levs_tmp, "RdBu_r",
-                     title, "Temperature Anomaly (°F)")
+                     title, "Temperature Anomaly (°F)",
+                     corn_belt_feat=corn_belt_feature)
     
     fig_na.savefig(OUT_DIR / f"{fname}_na.png", dpi=150, bbox_inches="tight", facecolor="white")
     plt.close(fig_na)
@@ -268,7 +291,8 @@ for month_num, month_name in MONTHS.items():
     # Plot anomalies (in/month) on North America map
     # Brown = drier than normal, Green = wetter than normal
     fig_na = plot_na(data_c, lons_c, lats, fill_levs_prate, "BrBG",
-                     title, "Precipitation Anomaly (in/month)")
+                     title, "Precipitation Anomaly (in/month)",
+                     corn_belt_feat=corn_belt_feature)
     
     fig_na.savefig(OUT_DIR / f"{fname}_na.png", dpi=150, bbox_inches="tight", facecolor="white")
     plt.close(fig_na)

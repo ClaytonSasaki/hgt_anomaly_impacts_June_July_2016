@@ -57,7 +57,7 @@
                     <img src="images/hgt500_anom_2016_<?php echo $num; ?>_<?php echo $slug . $suffix; ?>.png"
                          class="img-fluid rounded shadow-sm d-block mx-auto"
                          alt="<?php echo "$month 2016 $view"; ?>">
-                    <p class="static-caption"><?php echo $caption; ?></p>
+                    <p class="static-caption"><?php echo $caption; ?><?php if ($suffix === "_na") echo "<br>Gold outline = Corn Belt"; ?></p>
                 </div>
                 <?php endforeach; ?>
             </div>
@@ -85,15 +85,14 @@
             ];
             ?>
 
-            <?php foreach ($surface_vars as $var_label => $var): ?>
-            <h5 class="fw-semibold mt-4 mb-1"><?php echo $var_label; ?></h5>
-            <div class="row g-4">
-                <?php foreach ($surf_months as $month => [$num, $slug]): ?>
+            <?php foreach ($surf_months as $month => [$num, $slug]): ?>
+            <div class="row g-4 mt-2">
+                <?php foreach ($surface_vars as $var_label => $var): ?>
                 <div class="col-12 col-xl-6">
                     <img src="images/<?php echo $var['stem']; ?>_2016_<?php echo $num; ?>_<?php echo $slug; ?>_na.png"
                          class="img-fluid rounded shadow-sm d-block mx-auto"
                          alt="<?php echo "$month 2016 $var_label North America"; ?>">
-                    <p class="static-caption"><?php echo $var['caption']; ?></p>
+                    <p class="static-caption"><?php echo $var['caption']; ?><br>Gold outline = Corn Belt</p>
                 </div>
                 <?php endforeach; ?>
             </div>
@@ -116,6 +115,10 @@
                     <input type="range" class="form-range" id="opacitySlider"
                            min="0" max="1" step="0.05" value="0.75" style="width:130px">
                 </div>
+                <div class="form-check form-switch d-flex align-items-center mb-0">
+                    <input class="form-check-input me-2" type="checkbox" id="cornBeltToggle" checked>
+                    <label class="form-check-label text-muted small" for="cornBeltToggle">Corn Belt</label>
+                </div>
             </div>
 
             <div id="map" class="rounded shadow-sm"></div>
@@ -127,6 +130,10 @@
     <p class="text-muted mt-3 mb-0" style="font-size:.8rem;">
         Data source: <a href="https://psl.noaa.gov/data/gridded/data.ncep.reanalysis.html"
                         target="_blank" rel="noopener">NOAA PSL — NCEP/NCAR Reanalysis 1</a>
+    </p>
+    <p class="text-muted mt-1 mb-0" style="font-size:.8rem;">
+        Corn Belt source: <a href="https://www.ncei.noaa.gov/access/monitoring/reference-maps/corn-belt"
+                             target="_blank" rel="noopener">NOAA NCEI Geographical Reference Maps</a>
     </p>
 
 </div><!-- /container -->
