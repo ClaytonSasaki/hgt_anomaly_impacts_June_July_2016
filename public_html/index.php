@@ -110,6 +110,9 @@
                         <li><label class="dropdown-item d-flex gap-2">
                             <input type="checkbox" class="surf-var" value="prate_anom" data-label="Precip" checked> Precipitation
                         </label></li>
+                        <li><label class="dropdown-item d-flex gap-2">
+                            <input type="checkbox" class="surf-var" value="tmax_heatdays_anom" data-label="Heat Days"> Days &gt;95&deg;F
+                        </label></li>
                     </ul>
                 </div>
 

@@ -12,6 +12,7 @@ import cartopy.crs as ccrs
 import cartopy.feature as cfeature
 import cartopy.util as cutil
 import json
+import matplotlib.colors as mcolors
 import matplotlib.patheffects as pe
 import matplotlib.pyplot as plt
 import numpy as np
@@ -165,8 +166,22 @@ def plot_overlay(data, lons, lats, fill_levs, cmap):
 
     ax.set_axis_off()
     ax.spines["geo"].set_visible(False)
-    
+
     return fig
+
+
+def _white_center_cmap(name, white_frac=0.08):
+    """Diverging colormap with a white band centered at zero."""
+    base = plt.cm.get_cmap(name)
+    n, w = 512, max(1, round(512 * white_frac / 2))
+    return mcolors.LinearSegmentedColormap.from_list(f'{name}_wc', np.vstack([
+        base(np.linspace(0.0, 0.5, n // 2 - w)),
+        np.ones((2 * w, 4)),
+        base(np.linspace(0.5, 1.0, n // 2 - w)),
+    ]))
+
+CMAP_RDBW = _white_center_cmap('bwr')
+CMAP_BRBG = _white_center_cmap('BrBG')
 
 # =========================================================================
 # 500 mb GEOPOTENTIAL HEIGHT ANOMALY (and actual heights)
@@ -199,7 +214,7 @@ for month_num, month_name in MONTHS.items():
 
     # Plot anomalies (m) on global map with contours of actual heights (dm)
     # blue = below normal heights, red = above normal heights
-    fig_global = plot_global(anom_c, lons_c, lats, fill_levs_hgt, "RdBu_r", title,
+    fig_global = plot_global(anom_c, lons_c, lats, fill_levs_hgt, CMAP_RDBW, title,
                              "500 mb Height Anomaly (m)",
                              line_data=hgt_c / 10, line_levs=line_levs_hgt)
     
@@ -209,7 +224,7 @@ for month_num, month_name in MONTHS.items():
 
     # Plot anomalies (m) on North America map with contours of actual heights (dm)
     # blue = below normal heights, red = above normal heights
-    fig_na = plot_na_or_conus(anom_c, lons_c, lats, fill_levs_hgt, "RdBu_r", title,
+    fig_na = plot_na_or_conus(anom_c, lons_c, lats, fill_levs_hgt, CMAP_RDBW, title,
                               "500 mb Height Anomaly (m)",
                               line_data=hgt_c / 10, line_levs=line_levs_hgt,
                               corn_belt_feat=corn_belt_feature, zoom="na")
@@ -220,7 +235,7 @@ for month_num, month_name in MONTHS.items():
 
     # Create overlay of anomalies (m) for interactive map
     # blue = below normal heights, red = above normal heights
-    fig_overlay = plot_overlay(anom_c, lons_c, lats, fill_levs_hgt, "RdBu_r")
+    fig_overlay = plot_overlay(anom_c, lons_c, lats, fill_levs_hgt, CMAP_RDBW)
     
     fig_overlay.savefig(OUT_DIR / f"overlay_{fname}.png", transparent=True, dpi=600, pad_inches=0)
     plt.close(fig_overlay)
@@ -229,7 +244,7 @@ for month_num, month_name in MONTHS.items():
 
 
 # =========================================================================
-# 2m TEMPERATURE ANOMALY  (North America only)
+# 2m TEMPERATURE ANOMALY  (North America and CONUS)
 # =========================================================================
 
 # --- Load data ---
@@ -244,7 +259,7 @@ fill_levs_tmp = np.arange(-9, 9.1, 1)  # °F
 
 for month_num, month_name in MONTHS_SURFACE.items():
 
-    # Get mean values for chosen month and calculate anomalies (m)
+    # Get mean values for chosen month and calculate anomalies (°F)
     tmp_2016 = tmp_mean.sel(time=f"{YEAR}-{month_num:02d}").squeeze()
     tmp_clim = tmp_ltm.isel(time=month_num - 1)
     anom_f   = (tmp_2016 - tmp_clim) * 9 / 5 # °F anomaly = Kelvin anomaly × 9/5 (offset cancels in difference)
@@ -255,16 +270,16 @@ for month_num, month_name in MONTHS_SURFACE.items():
     title = f"2m Temperature Anomaly (°F) — {month_name} {YEAR}"
     fname = f"tmp2m_anom_{YEAR}_{month_num:02d}_{month_name.lower()}"
 
-    # Plot anomalies (°F) on North America map
+    # Plot anomalies (°F) on map
     # Blue = cooler than normal, Red = warmer than normal
-    fig_na = plot_na_or_conus(data_c, lons_c, lats, fill_levs_tmp, "RdBu_r",
+    fig_na = plot_na_or_conus(data_c, lons_c, lats, fill_levs_tmp, CMAP_RDBW,
                               title, "Temperature Anomaly (°F)",
                               corn_belt_feat=corn_belt_feature, zoom="na")
     fig_na.savefig(OUT_DIR / f"{fname}_na.png", dpi=150, bbox_inches="tight", facecolor="white")
     plt.close(fig_na)
     print(f"Saved: {OUT_DIR / f'{fname}_na.png'}")
 
-    fig_conus = plot_na_or_conus(data_c, lons_c, lats, fill_levs_tmp, "RdBu_r",
+    fig_conus = plot_na_or_conus(data_c, lons_c, lats, fill_levs_tmp, CMAP_RDBW,
                                  title, "Temperature Anomaly (°F)",
                                  corn_belt_feat=corn_belt_feature, zoom="conus")
     fig_conus.savefig(OUT_DIR / f"{fname}_conus.png", dpi=150, bbox_inches="tight", facecolor="white")
@@ -273,7 +288,7 @@ for month_num, month_name in MONTHS_SURFACE.items():
 
 
 # =========================================================================
-# PRECIPITATION RATE ANOMALY  (North America only)
+# PRECIPITATION RATE ANOMALY  (North America and CONUS)
 # =========================================================================
 
 # --- Load data ---
@@ -288,7 +303,7 @@ fill_levs_prate = np.arange(-3, 3.1, 0.25)  # in/month
 
 for month_num, month_name in MONTHS_SURFACE.items():
 
-    # Get mean values for chosen month and calculate anomalies (m)
+    # Get mean values for chosen month and calculate anomalies (in/month)
     prate_2016 = prate_mean.sel(time=f"{YEAR}-{month_num:02d}").squeeze()
     prate_clim = prate_ltm.isel(time=month_num - 1)
     days       = DAYS_IN_MONTH[month_num]
@@ -300,21 +315,73 @@ for month_num, month_name in MONTHS_SURFACE.items():
     title = f"Precipitation Anomaly (in/month) — {month_name} {YEAR}"
     fname = f"prate_anom_{YEAR}_{month_num:02d}_{month_name.lower()}"
 
-    # Plot anomalies (in/month) on North America map
+    # Plot anomalies (in/month) on map
     # Brown = drier than normal, Green = wetter than normal
-    fig_na = plot_na_or_conus(data_c, lons_c, lats, fill_levs_prate, "BrBG",
+    fig_na = plot_na_or_conus(data_c, lons_c, lats, fill_levs_prate, CMAP_BRBG,
                               title, "Precipitation Anomaly (in/month)",
                               corn_belt_feat=corn_belt_feature, zoom="na")
     fig_na.savefig(OUT_DIR / f"{fname}_na.png", dpi=150, bbox_inches="tight", facecolor="white")
     plt.close(fig_na)
     print(f"Saved: {OUT_DIR / f'{fname}_na.png'}")
 
-    fig_conus = plot_na_or_conus(data_c, lons_c, lats, fill_levs_prate, "BrBG",
+    fig_conus = plot_na_or_conus(data_c, lons_c, lats, fill_levs_prate, CMAP_BRBG,
                                  title, "Precipitation Anomaly (in/month)",
                                  corn_belt_feat=corn_belt_feature, zoom="conus")
     fig_conus.savefig(OUT_DIR / f"{fname}_conus.png", dpi=150, bbox_inches="tight", facecolor="white")
     plt.close(fig_conus)
     print(f"Saved: {OUT_DIR / f'{fname}_conus.png'}")
+
+
+# =========================================================================
+# DAYS > 95°F (35°C) ANOMALY  (North America and CONUS)
+# =========================================================================
+
+_hd_clim_path = DATA_DIR / "heat_days_clim_1991-2020.nc"
+_hd_2016_path = DATA_DIR / f"heat_days_{YEAR}.nc"
+
+if _hd_clim_path.exists() and _hd_2016_path.exists():
+
+    # --- Load data ---
+    ds_hd_clim = xr.open_dataset(_hd_clim_path)
+    ds_hd_2016 = xr.open_dataset(_hd_2016_path)
+
+    # Contour levels
+    fill_levs_hd = np.arange(-20, 21, 2)  # days/month
+
+    for month_num, month_name in MONTHS_SURFACE.items():
+        
+        # Get mean values for chosen month and calculate anomalies (days)
+        hd_2016 = ds_hd_2016["heat_days"].sel(month=month_num).squeeze()
+        hd_clim = ds_hd_clim["heat_days"].sel(month=month_num).squeeze()
+        anom    = hd_2016 - hd_clim
+
+        # Update coordinates for plotting
+        data_c, lons_c, lats = prep_data(anom)
+
+        title = f"Days > 95°F Anomaly (days/month) — {month_name} {YEAR}"
+        fname = f"tmax_heatdays_anom_{YEAR}_{month_num:02d}_{month_name.lower()}"
+
+        # Plot anomalies (days) on map
+        # Blue = less hot days than normal, Red = more hot days than normal
+        fig_na = plot_na_or_conus(data_c, lons_c, lats, fill_levs_hd, CMAP_RDBW,
+                                  title, "Days > 95°F Anomaly (days/month)",
+                                  corn_belt_feat=corn_belt_feature, zoom="na")
+        fig_na.savefig(OUT_DIR / f"{fname}_na.png", dpi=150, bbox_inches="tight", facecolor="white")
+        plt.close(fig_na)
+        print(f"Saved: {OUT_DIR / f'{fname}_na.png'}")
+
+        fig_conus = plot_na_or_conus(data_c, lons_c, lats, fill_levs_hd, CMAP_RDBW,
+                                     title, "Days > 95°F Anomaly (days/month)",
+                                     corn_belt_feat=corn_belt_feature, zoom="conus")
+        fig_conus.savefig(OUT_DIR / f"{fname}_conus.png", dpi=150, bbox_inches="tight", facecolor="white")
+        plt.close(fig_conus)
+        print(f"Saved: {OUT_DIR / f'{fname}_conus.png'}")
+
+    ds_hd_clim.close()
+    ds_hd_2016.close()
+
+else:
+    print("Warning: heat days data not found — run compute_heat_days.py first.")
 
 
 print("Done.")

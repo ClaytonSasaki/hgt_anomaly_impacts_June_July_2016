@@ -2,7 +2,9 @@
 #
 # grab_data.sh
 #
-# Download monthly mean and 1991-2020 monthly climatology (WMO standard) files for NCEP/NCAR Reanalysis 1 from NOAA PSL
+# Download NCEP/NCAR Reanalysis 1 data from NOAA PSL
+#
+# Monthly mean and 1991-2020 monthly climatology (WMO standard) files for
 #
 #   Pressure level (2.5° grid):
 #     hgt.mon.mean.nc              : geopotential height, all years, all pressure levels 
@@ -12,16 +14,21 @@
 #     air.2m.mon.mean.nc           : 2m air temperature, all years
 #     air.2m.mon.ltm.1991-2020.nc  : 2m air temperature climatology
 #
-#     prate.sfc.mon.mean.nc        : precipitation rate, all years
+#     prate.sfc.mon.mean.nc        : precipitation rate, all years 
 #     prate.sfc.mon.ltm.1991-2020.nc : precipitation rate climatology
+#
+# Daily files (where monthly files don't exist) for
+#
+#   Surface Gaussian grid:
+#     tmax.2m.gauss.XXXX.nc        : maximum 2m air temperature, each year 1991-2020 and 2016
 #
 # Safe to re-run; existing up-to-date files are skipped.
 
 set -euo pipefail
 
 DEST_DIR="data"
-BASE_PRES="https://downloads.psl.noaa.gov/Datasets/ncep.reanalysis/Monthlies/pressure"
-BASE_SURF="https://downloads.psl.noaa.gov/Datasets/ncep.reanalysis/Monthlies/surface_gauss"
+BASE_MON_PRES="https://downloads.psl.noaa.gov/Datasets/ncep.reanalysis/Monthlies/pressure"
+BASE_MON_SURF="https://downloads.psl.noaa.gov/Datasets/ncep.reanalysis/Monthlies/surface_gauss"
 
 mkdir -p "${DEST_DIR}"
 
@@ -29,17 +36,24 @@ mkdir -p "${DEST_DIR}"
 # -N   only re-fetch if the server copy is newer than the local copy
 # -P   place files in DEST_DIR
 
-echo "Downloading geopotential height..."
+echo "Downloading monthly mean geopotential height..."
 wget -c -N -P "${DEST_DIR}" \
-    "${BASE_PRES}/hgt.mon.mean.nc" \
-    "${BASE_PRES}/hgt.mon.ltm.1991-2020.nc"
+    "${BASE_MON_PRES}/hgt.mon.mean.nc" \
+    "${BASE_MON_PRES}/hgt.mon.ltm.1991-2020.nc"
 
-echo "Downloading 2m air temperature and surface precipitation rate..."
+echo "Downloading monthly mean 2m air temperature and surface precipitation rate..."
 wget -c -N -P "${DEST_DIR}" \
-    "${BASE_SURF}/air.2m.mon.mean.nc" \
-    "${BASE_SURF}/air.2m.mon.ltm.1991-2020.nc" \
-    "${BASE_SURF}/prate.sfc.mon.mean.nc" \
-    "${BASE_SURF}/prate.sfc.mon.ltm.1991-2020.nc"
+    "${BASE_MON_SURF}/air.2m.mon.mean.nc" \
+    "${BASE_MON_SURF}/air.2m.mon.ltm.1991-2020.nc" \
+    "${BASE_MON_SURF}/prate.sfc.mon.mean.nc" \
+    "${BASE_MON_SURF}/prate.sfc.mon.ltm.1991-2020.nc"
+
+BASE_DAILY_SURF="https://downloads.psl.noaa.gov/Datasets/ncep.reanalysis/Dailies/surface_gauss"
+
+echo "Downloading daily 2m max temperature for heat-days computation..."
+for year in $(seq 1991 2020); do
+    wget -c -N -P "${DEST_DIR}" "${BASE_DAILY_SURF}/tmax.2m.gauss.${year}.nc"
+done
 
 echo "Done. Files in ${DEST_DIR}/:"
 ls -lh "${DEST_DIR}"

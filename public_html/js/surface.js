@@ -14,6 +14,10 @@ var SURF_VARS = [
         stem:    'prate_anom',
         caption: 'Brown = drier than normal &nbsp;|&nbsp; Green = wetter than normal &nbsp;|&nbsp; Units: in/month'
     },
+    {
+        stem:    'tmax_heatdays_anom',
+        caption: 'Blue = fewer days &gt;95&deg;F than normal &nbsp;|&nbsp; Red = more days &gt;95&deg;F than normal &nbsp;|&nbsp; Units: days/month'
+    },
 ];
 
 function updateSurfaceGrid() {
@@ -38,10 +42,12 @@ function updateSurfaceGrid() {
         var row = document.createElement('div');
         row.className = 'row g-4 mt-2';
 
+        var colClass = ['', 'col-12 col-xl-8 mx-auto', 'col-12 col-xl-6', 'col-12 col-xl-4'][selectedVars.length] || 'col-12 col-xl-4';
+
         selectedVars.forEach(function(v) {
             var fname = v.stem + '_2016_' + month.val + '_' + month.slug + '_' + zoom + '.png';
             var col = document.createElement('div');
-            col.className = 'col-12 col-xl-6';
+            col.className = colClass;
             col.innerHTML =
                 '<img src="images/' + fname + '" ' +
                      'class="img-fluid rounded shadow-sm d-block mx-auto" ' +
