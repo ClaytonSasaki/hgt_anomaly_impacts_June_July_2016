@@ -63,7 +63,8 @@ def prep_data(da):
 
 
 def add_titles(ax, title_left):
-    ax.set_title(title_left, loc="left", fontsize=13, fontweight="bold")
+    fontsize = 11 if len(title_left) > 48 else 13
+    ax.set_title(title_left, loc="left", fontsize=fontsize, fontweight="bold")
     ax.set_title(CLIM_STR,   loc="right", fontsize=9,  color="#888888")
 
 
