@@ -437,4 +437,56 @@ else:
     print("Warning: SDD data not found — run compute_heat_days.py first.")
 
 
+# =========================================================================
+# MODIFIED GROWING DEGREE DAYS ANOMALY  (North America and CONUS)
+# =========================================================================
+
+_mgdd_clim_path = DATA_DIR / "mgdd_clim_1991-2020.nc"
+_mgdd_2016_path = DATA_DIR / f"mgdd_{YEAR}.nc"
+
+if _mgdd_clim_path.exists() and _mgdd_2016_path.exists():
+
+    # --- Load data ---
+    ds_mgdd_clim = xr.open_dataset(_mgdd_clim_path)
+    ds_mgdd_2016 = xr.open_dataset(_mgdd_2016_path)
+
+    # Contour levels
+    fill_levs_mgdd = np.arange(-200, 201, 20)  # °F·days/month
+
+    for month_num, month_name in MONTHS_SURFACE.items():
+
+        # Get mean values for chosen month and calculate anomalies (°F·days)
+        mgdd_2016 = ds_mgdd_2016["mgdd"].sel(month=month_num).squeeze()
+        mgdd_clim = ds_mgdd_clim["mgdd"].sel(month=month_num).squeeze()
+        anom      = mgdd_2016 - mgdd_clim
+
+        # Update coordinates for plotting
+        data_c, lons_c, lats = prep_data(anom)
+
+        title = f"Modified GDD Anomaly (°F·days/month) — {month_name} {YEAR}"
+        fname = f"mgdd_anom_{YEAR}_{month_num:02d}_{month_name.lower()}"
+
+        # Blue = fewer MGDD than normal (cooler, slower development)
+        # Red = more MGDD than normal (warmer, faster development)
+        fig_na = plot_na_or_conus(data_c, lons_c, lats, fill_levs_mgdd, CMAP_RDBW,
+                                  title, "MGDD Anomaly (°F·days/month)",
+                                  corn_belt_feat=corn_belt_feature, zoom="na")
+        fig_na.savefig(OUT_DIR / f"{fname}_na.png", dpi=150, bbox_inches="tight", facecolor="white")
+        plt.close(fig_na)
+        print(f"Saved: {OUT_DIR / f'{fname}_na.png'}")
+
+        fig_conus = plot_na_or_conus(data_c, lons_c, lats, fill_levs_mgdd, CMAP_RDBW,
+                                     title, "MGDD Anomaly (°F·days/month)",
+                                     corn_belt_feat=corn_belt_feature, zoom="conus")
+        fig_conus.savefig(OUT_DIR / f"{fname}_conus.png", dpi=150, bbox_inches="tight", facecolor="white")
+        plt.close(fig_conus)
+        print(f"Saved: {OUT_DIR / f'{fname}_conus.png'}")
+
+    ds_mgdd_clim.close()
+    ds_mgdd_2016.close()
+
+else:
+    print("Warning: MGDD data not found — run compute_heat_days.py first.")
+
+
 print("Done.")

@@ -22,6 +22,10 @@ var SURF_VARS = [
         stem:    'sdd_anom',
         caption: 'Blue = fewer stress degree days than normal &nbsp;|&nbsp; Red = more stress degree days than normal &nbsp;|&nbsp; Units: &deg;F&middot;days/month'
     },
+    {
+        stem:    'mgdd_anom',
+        caption: 'Blue = fewer modified growing degree days than normal &nbsp;|&nbsp; Red = more modified growing degree days than normal &nbsp;|&nbsp; Units: &deg;F&middot;days/month'
+    },
 ];
 
 function updateSurfaceGrid() {

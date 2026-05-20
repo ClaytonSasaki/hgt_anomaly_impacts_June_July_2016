@@ -17,10 +17,11 @@
 #     prate.sfc.mon.mean.nc        : precipitation rate, all years 
 #     prate.sfc.mon.ltm.1991-2020.nc : precipitation rate climatology
 #
-# Daily files (where monthly files don't exist) for
+# Daily files (where monthly files won't work for our use) for
 #
 #   Surface Gaussian grid:
 #     tmax.2m.gauss.XXXX.nc        : maximum 2m air temperature, each year 1991-2020 and 2016
+#     tmin.2m.gauss.XXXX.nc        : minimum 2m air temperature, each year 1991-2020 and 2016
 #
 # Safe to re-run; existing up-to-date files are skipped.
 
@@ -50,9 +51,10 @@ wget -c -N -P "${DEST_DIR}" \
 
 BASE_DAILY_SURF="https://downloads.psl.noaa.gov/Datasets/ncep.reanalysis/Dailies/surface_gauss"
 
-echo "Downloading daily 2m max temperature for heat-days computation..."
+echo "Downloading daily 2m max/min temperatures..."
 for year in $(seq 1991 2020); do
     wget -c -N -P "${DEST_DIR}" "${BASE_DAILY_SURF}/tmax.2m.gauss.${year}.nc"
+    wget -c -N -P "${DEST_DIR}" "${BASE_DAILY_SURF}/tmin.2m.gauss.${year}.nc"
 done
 
 echo "Done. Files in ${DEST_DIR}/:"

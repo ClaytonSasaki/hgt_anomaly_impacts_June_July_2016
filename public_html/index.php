@@ -116,12 +116,20 @@
                         <li><label class="dropdown-item d-flex gap-2">
                             <input type="checkbox" class="surf-var" value="sdd_anom" data-label="SDD"> Stress Degree Days
                         </label></li>
+                        <li><label class="dropdown-item d-flex gap-2">
+                            <input type="checkbox" class="surf-var" value="mgdd_anom" data-label="MGDD"> Modified GDD
+                        </label></li>
                     </ul>
                 </div>
 
             </div>
 
             <div id="surface-grid"></div>
+
+            <p class="text-muted mt-3 mb-0" style="font-size:.8rem;">
+                Agriculture metric source: <a href="https://www.mrcc.purdue.edu/resources/growing-degree-day-description"
+                    target="_blank" rel="noopener">Midwestern Regional Climate Center</a>
+            </p>
 
         </div><!-- /surface pane -->
 
