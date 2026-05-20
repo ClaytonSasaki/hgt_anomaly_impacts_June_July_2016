@@ -63,10 +63,23 @@
             </div>
             <?php endforeach; ?>
 
+            <p class="mt-4 fst-italic text-muted">
+                <strong class="text-body">Takeaway:</strong>
+                Anomalously strong ridge centered just west of corn belt early in growing season
+            </p>
+
         </div>
 
         <!-- ── Surface Analysis ── -->
         <div class="tab-pane fade" id="pane-surface" role="tabpanel">
+
+            <p class="mt-4 fst-italic text-muted">
+                <strong class="text-body">Takeaway:</strong>
+                Ridge led to warmer than average temperatures (but NOT excessively hot) and a dry vegetative period,
+                resulting in good growth conditions (more modified growing degree days). This was followed by
+                near-normal temperatures and wetter than usual conditions during the grain-filling period.
+                Throughout, soil moisture levels were near normal.
+            </p>
 
             <div class="d-flex flex-wrap align-items-center gap-3 my-3">
 
@@ -80,7 +93,7 @@
                 <div class="dropdown">
                     <button class="btn btn-outline-secondary dropdown-toggle" type="button"
                             id="monthsDropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside">
-                        Months: Jun, Jul
+                        Months: Jun, Jul, Aug
                     </button>
                     <ul class="dropdown-menu p-2" style="min-width:130px">
                         <li><label class="dropdown-item d-flex gap-2">
@@ -93,7 +106,7 @@
                             <input type="checkbox" class="surf-month" value="07" data-label="Jul" checked> July
                         </label></li>
                         <li><label class="dropdown-item d-flex gap-2">
-                            <input type="checkbox" class="surf-month" value="08" data-label="Aug"> August
+                            <input type="checkbox" class="surf-month" value="08" data-label="Aug" checked> August
                         </label></li>
                     </ul>
                 </div>
@@ -101,7 +114,7 @@
                 <div class="dropdown">
                     <button class="btn btn-outline-secondary dropdown-toggle" type="button"
                             id="varsDropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside">
-                        Vars: Temp, Precip
+                        Vars: Temp, MGDD, Precip
                     </button>
                     <ul class="dropdown-menu p-2" style="min-width:210px">
                         <li><h6 class="dropdown-header px-2">Temperature Anomalies</h6></li>
@@ -115,7 +128,7 @@
                             <input type="checkbox" class="surf-var" value="sdd_anom" data-label="SDD"> Stress Degree Days
                         </label></li>
                         <li><label class="dropdown-item d-flex gap-2">
-                            <input type="checkbox" class="surf-var" value="mgdd_anom" data-label="MGDD"> Modified GDD
+                            <input type="checkbox" class="surf-var" value="mgdd_anom" data-label="MGDD" checked> Modified GDD
                         </label></li>
                         <li><hr class="dropdown-divider"></li>
                         <li><h6 class="dropdown-header px-2">Precipitation Anomalies</h6></li>
