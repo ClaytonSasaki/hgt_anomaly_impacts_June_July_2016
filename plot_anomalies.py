@@ -26,9 +26,8 @@ OUT_DIR  = Path("public_html/images")
 OUT_DIR.mkdir(exist_ok=True)
 
 YEAR          = 2016
-MONTHS         = {6: "June", 7: "July"}
-MONTHS_SURFACE = {5: "May", 6: "June", 7: "July", 8: "August"}
-DAYS_IN_MONTH  = {5: 31, 6: 30, 7: 31, 8: 31}
+MONTHS        = {5: "May", 6: "June", 7: "July", 8: "August"}
+DAYS_IN_MONTH = {5: 31, 6: 30, 7: 31, 8: 31}
 CLIM_STR      = "Climatology: 1991–2020  |  NCEP/NCAR Reanalysis 1"
 
 states = cfeature.NaturalEarthFeature(
@@ -154,8 +153,8 @@ def plot_overlay(data, lons, lats, fill_levs, cmap):
     ax = fig.add_axes(
         [0, 0, 1, 1],
         projection=ccrs.Mercator(central_longitude=0,
-                                  min_latitude=-(LAT_LIMIT + 0.25),
-                                  max_latitude=(LAT_LIMIT + 0.25))
+                                  min_latitude=-LAT_LIMIT,
+                                  max_latitude=LAT_LIMIT)
     )
     ax.set_extent([-179.99, 179.99, -LAT_LIMIT, LAT_LIMIT], crs=ccrs.PlateCarree())
 
@@ -260,7 +259,7 @@ tmp_ltm  = ds_tmp_ltm["air"]
 # Contour levels
 fill_levs_tmp = np.arange(-9, 9.1, 1)  # °F
 
-for month_num, month_name in MONTHS_SURFACE.items():
+for month_num, month_name in MONTHS.items():
 
     # Get mean values for chosen month and calculate anomalies (°F)
     tmp_2016 = tmp_mean.sel(time=f"{YEAR}-{month_num:02d}").squeeze()
@@ -289,6 +288,11 @@ for month_num, month_name in MONTHS_SURFACE.items():
     plt.close(fig_conus)
     print(f"Saved: {OUT_DIR / f'{fname}_conus.png'}")
 
+    fig_overlay = plot_overlay(data_c, lons_c, lats, fill_levs_tmp, CMAP_RDBW)
+    fig_overlay.savefig(OUT_DIR / f"overlay_{fname}.png", transparent=True, dpi=300, pad_inches=0)
+    plt.close(fig_overlay)
+    print(f"Saved overlay: {OUT_DIR / f'overlay_{fname}.png'}")
+
 
 # =========================================================================
 # PRECIPITATION RATE ANOMALY  (North America and CONUS)
@@ -304,7 +308,7 @@ prate_ltm  = ds_prate_ltm["prate"]
 # Contour levels
 fill_levs_prate = np.arange(-3, 3.1, 0.25)  # in/month
 
-for month_num, month_name in MONTHS_SURFACE.items():
+for month_num, month_name in MONTHS.items():
 
     # Get mean values for chosen month and calculate anomalies (in/month)
     prate_2016 = prate_mean.sel(time=f"{YEAR}-{month_num:02d}").squeeze()
@@ -334,6 +338,11 @@ for month_num, month_name in MONTHS_SURFACE.items():
     plt.close(fig_conus)
     print(f"Saved: {OUT_DIR / f'{fname}_conus.png'}")
 
+    fig_overlay = plot_overlay(data_c, lons_c, lats, fill_levs_prate, CMAP_BRBG)
+    fig_overlay.savefig(OUT_DIR / f"overlay_{fname}.png", transparent=True, dpi=300, pad_inches=0)
+    plt.close(fig_overlay)
+    print(f"Saved overlay: {OUT_DIR / f'overlay_{fname}.png'}")
+
 
 # =========================================================================
 # DAYS > 95°F (35°C) ANOMALY  (North America and CONUS)
@@ -351,7 +360,7 @@ if _hd_clim_path.exists() and _hd_2016_path.exists():
     # Contour levels
     fill_levs_hd = np.arange(-20, 21, 2)  # days/month
 
-    for month_num, month_name in MONTHS_SURFACE.items():
+    for month_num, month_name in MONTHS.items():
         
         # Get mean values for chosen month and calculate anomalies (days)
         hd_2016 = ds_hd_2016["heat_days"].sel(month=month_num).squeeze()
@@ -380,6 +389,11 @@ if _hd_clim_path.exists() and _hd_2016_path.exists():
         plt.close(fig_conus)
         print(f"Saved: {OUT_DIR / f'{fname}_conus.png'}")
 
+        fig_overlay = plot_overlay(data_c, lons_c, lats, fill_levs_hd, CMAP_RDBW)
+        fig_overlay.savefig(OUT_DIR / f"overlay_{fname}.png", transparent=True, dpi=300, pad_inches=0)
+        plt.close(fig_overlay)
+        print(f"Saved overlay: {OUT_DIR / f'overlay_{fname}.png'}")
+
     ds_hd_clim.close()
     ds_hd_2016.close()
 
@@ -403,7 +417,7 @@ if _sdd_clim_path.exists() and _sdd_2016_path.exists():
     # Contour levels
     fill_levs_sdd = np.arange(-200, 201, 20)  # °F·days/month
 
-    for month_num, month_name in MONTHS_SURFACE.items():
+    for month_num, month_name in MONTHS.items():
 
         # Get mean values for chosen month and calculate anomalies (°F·days)
         sdd_2016 = ds_sdd_2016["sdd"].sel(month=month_num).squeeze()
@@ -432,6 +446,11 @@ if _sdd_clim_path.exists() and _sdd_2016_path.exists():
         plt.close(fig_conus)
         print(f"Saved: {OUT_DIR / f'{fname}_conus.png'}")
 
+        fig_overlay = plot_overlay(data_c, lons_c, lats, fill_levs_sdd, CMAP_RDBW)
+        fig_overlay.savefig(OUT_DIR / f"overlay_{fname}.png", transparent=True, dpi=300, pad_inches=0)
+        plt.close(fig_overlay)
+        print(f"Saved overlay: {OUT_DIR / f'overlay_{fname}.png'}")
+
     ds_sdd_clim.close()
     ds_sdd_2016.close()
 
@@ -455,7 +474,7 @@ if _mgdd_clim_path.exists() and _mgdd_2016_path.exists():
     # Contour levels
     fill_levs_mgdd = np.arange(-200, 201, 20)  # °F·days/month
 
-    for month_num, month_name in MONTHS_SURFACE.items():
+    for month_num, month_name in MONTHS.items():
 
         # Get mean values for chosen month and calculate anomalies (°F·days)
         mgdd_2016 = ds_mgdd_2016["mgdd"].sel(month=month_num).squeeze()
@@ -483,6 +502,11 @@ if _mgdd_clim_path.exists() and _mgdd_2016_path.exists():
         fig_conus.savefig(OUT_DIR / f"{fname}_conus.png", dpi=150, bbox_inches="tight", facecolor="white")
         plt.close(fig_conus)
         print(f"Saved: {OUT_DIR / f'{fname}_conus.png'}")
+
+        fig_overlay = plot_overlay(data_c, lons_c, lats, fill_levs_mgdd, CMAP_RDBW)
+        fig_overlay.savefig(OUT_DIR / f"overlay_{fname}.png", transparent=True, dpi=300, pad_inches=0)
+        plt.close(fig_overlay)
+        print(f"Saved overlay: {OUT_DIR / f'overlay_{fname}.png'}")
 
     ds_mgdd_clim.close()
     ds_mgdd_2016.close()
@@ -519,17 +543,21 @@ for layer in _soilw_layers:
         print(f"Warning: {layer['mean_file'].name} or LTM not found — skipping {layer['label']}.")
         continue
 
+    # --- Load data ---
     ds_mean = xr.open_dataset(layer["mean_file"])
     ds_ltm  = xr.open_dataset(layer["ltm_file"], use_cftime=True)
+    
     soilw_mean = ds_mean[layer["var"]]
     soilw_ltm  = ds_ltm[layer["var"]]
 
-    for month_num, month_name in MONTHS_SURFACE.items():
+    for month_num, month_name in MONTHS.items():
 
+        # Get mean values for chosen month and calculate anomalies (fraction)
         soilw_2016 = soilw_mean.sel(time=f"{YEAR}-{month_num:02d}").squeeze()
         soilw_clim = soilw_ltm.isel(time=month_num - 1)
         anom       = soilw_2016 - soilw_clim
 
+        # Update coordinates for plotting
         data_c, lons_c, lats = prep_data(anom)
 
         units = soilw_mean.attrs.get("units", "fraction")
@@ -537,6 +565,8 @@ for layer in _soilw_layers:
         cbar_label = f"Soil Moisture Anomaly ({units})"
         fname = f"{layer['stem']}_{YEAR}_{month_num:02d}_{month_name.lower()}"
 
+        # Plot anomalies (fraction) on map
+        # Brown = drier than normal, Green = wetter than normal
         fig_na = plot_na_or_conus(data_c, lons_c, lats, layer["fill_levs"], CMAP_BRBG,
                                   title, cbar_label,
                                   corn_belt_feat=corn_belt_feature, zoom="na")
@@ -550,6 +580,11 @@ for layer in _soilw_layers:
         fig_conus.savefig(OUT_DIR / f"{fname}_conus.png", dpi=150, bbox_inches="tight", facecolor="white")
         plt.close(fig_conus)
         print(f"Saved: {OUT_DIR / f'{fname}_conus.png'}")
+
+        fig_overlay = plot_overlay(data_c, lons_c, lats, layer["fill_levs"], CMAP_BRBG)
+        fig_overlay.savefig(OUT_DIR / f"overlay_{fname}.png", transparent=True, dpi=300, pad_inches=0)
+        plt.close(fig_overlay)
+        print(f"Saved overlay: {OUT_DIR / f'overlay_{fname}.png'}")
 
     ds_mean.close()
     ds_ltm.close()

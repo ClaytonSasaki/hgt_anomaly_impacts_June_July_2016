@@ -160,10 +160,14 @@
 
             <div class="d-flex flex-wrap align-items-center gap-3 my-3">
                 <div class="btn-group" role="group" aria-label="Month selector">
+                    <input type="radio" class="btn-check" name="month" id="btnMay" value="may" autocomplete="off">
+                    <label class="btn btn-outline-primary" for="btnMay">May 2016</label>
                     <input type="radio" class="btn-check" name="month" id="btnJune" value="june" autocomplete="off" checked>
                     <label class="btn btn-outline-primary" for="btnJune">June 2016</label>
                     <input type="radio" class="btn-check" name="month" id="btnJuly" value="july" autocomplete="off">
                     <label class="btn btn-outline-primary" for="btnJuly">July 2016</label>
+                    <input type="radio" class="btn-check" name="month" id="btnAugust" value="august" autocomplete="off">
+                    <label class="btn btn-outline-primary" for="btnAugust">August 2016</label>
                 </div>
                 <div class="d-flex align-items-center gap-2">
                     <label for="opacitySlider" class="form-label mb-0 text-muted small">Overlay opacity</label>
@@ -172,11 +176,15 @@
                 </div>
                 <div class="form-check form-switch d-flex align-items-center mb-0">
                     <input class="form-check-input me-2" type="checkbox" id="cornBeltToggle" checked>
-                    <label class="form-check-label text-muted small" for="cornBeltToggle">Corn Belt</label>
+                    <label class="form-check-label text-muted small" for="cornBeltToggle">Corn Belt<sup>*</sup></label>
                 </div>
             </div>
 
             <div id="map" class="rounded shadow-sm"></div>
+
+            <p class="text-muted mt-2 mb-0" style="font-size:.8rem;">
+                <em><sup>*</sup> Due to projection of interactive map, corn belt outline is slightly displaced</em>
+            </p>
 
         </div><!-- /interactive pane -->
 
