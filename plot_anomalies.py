@@ -128,7 +128,8 @@ def plot_na_or_conus(data, lons, lats, fill_levs, cmap, title_left, cbar_label,
     ax.add_feature(states,                               linewidth=0.4)
 
     if corn_belt_feat is not None:
-        ax.add_feature(corn_belt_feat)
+        cb = ax.add_feature(corn_belt_feat)
+        cb.set_path_effects([pe.withStroke(linewidth=3.5, foreground='#555555')])
 
     gl = ax.gridlines(draw_labels=True, linewidth=0.4,
                       color="gray", alpha=0.5, linestyle="--")
@@ -182,7 +183,7 @@ def _white_center_cmap(name, white_frac=0.08):
         base(np.linspace(0.5, 1.0, n // 2 - w)),
     ]))
 
-CMAP_RDBW = _white_center_cmap('bwr')
+CMAP_RDBW = _white_center_cmap('RdBu_r')
 CMAP_BRBG = _white_center_cmap('BrBG')
 
 # =========================================================================
