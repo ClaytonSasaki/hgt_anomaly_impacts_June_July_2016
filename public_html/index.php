@@ -104,11 +104,9 @@
                         Vars: Temp, Precip
                     </button>
                     <ul class="dropdown-menu p-2" style="min-width:210px">
+                        <li><h6 class="dropdown-header px-2">Temperature Anomalies</h6></li>
                         <li><label class="dropdown-item d-flex gap-2">
                             <input type="checkbox" class="surf-var" value="tmp2m_anom" data-label="Temp" checked> 2m Temperature
-                        </label></li>
-                        <li><label class="dropdown-item d-flex gap-2">
-                            <input type="checkbox" class="surf-var" value="prate_anom" data-label="Precip" checked> Precipitation
                         </label></li>
                         <li><label class="dropdown-item d-flex gap-2">
                             <input type="checkbox" class="surf-var" value="tmax_heatdays_anom" data-label="Heat Days"> Days &gt;95&deg;F
@@ -118,6 +116,11 @@
                         </label></li>
                         <li><label class="dropdown-item d-flex gap-2">
                             <input type="checkbox" class="surf-var" value="mgdd_anom" data-label="MGDD"> Modified GDD
+                        </label></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><h6 class="dropdown-header px-2">Precipitation Anomalies</h6></li>
+                        <li><label class="dropdown-item d-flex gap-2">
+                            <input type="checkbox" class="surf-var" value="prate_anom" data-label="Precip" checked> Precipitation
                         </label></li>
                         <li><label class="dropdown-item d-flex gap-2">
                             <input type="checkbox" class="surf-var" value="soilw_0_10cm_anom" data-label="Soil 0-10cm"> Soil Moisture 0–10 cm

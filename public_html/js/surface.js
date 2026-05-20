@@ -6,13 +6,10 @@ var SURF_MONTHS = [
 ];
 
 var SURF_VARS = [
+    // ── Temperature ──
     {
         stem:    'tmp2m_anom',
         caption: 'Blue = cooler than normal &nbsp;|&nbsp; Red = warmer than normal &nbsp;|&nbsp; Units: &deg;F'
-    },
-    {
-        stem:    'prate_anom',
-        caption: 'Brown = drier than normal &nbsp;|&nbsp; Green = wetter than normal &nbsp;|&nbsp; Units: in/month'
     },
     {
         stem:    'tmax_heatdays_anom',
@@ -25,6 +22,11 @@ var SURF_VARS = [
     {
         stem:    'mgdd_anom',
         caption: 'Blue = fewer modified growing degree days than normal &nbsp;|&nbsp; Red = more modified growing degree days than normal &nbsp;|&nbsp; Units: &deg;F&middot;days/month'
+    },
+    // ── Precipitation ──
+    {
+        stem:    'prate_anom',
+        caption: 'Brown = drier than normal &nbsp;|&nbsp; Green = wetter than normal &nbsp;|&nbsp; Units: in/month'
     },
     {
         stem:    'soilw_0_10cm_anom',
