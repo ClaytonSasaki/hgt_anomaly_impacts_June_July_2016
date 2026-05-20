@@ -489,4 +489,68 @@ else:
     print("Warning: MGDD data not found — run compute_heat_days.py first.")
 
 
+# =========================================================================
+# SOIL MOISTURE ANOMALY  (North America and CONUS)
+# =========================================================================
+
+_soilw_layers = [
+    {
+        "mean_file": DATA_DIR / "soilw.0-10cm.mon.mean.nc",
+        "ltm_file":  DATA_DIR / "soilw.0-10cm.mon.ltm.1991-2020.nc",
+        "var":       "soilw",
+        "stem":      "soilw_0_10cm_anom",
+        "label":     "0–10 cm BGL",
+        "fill_levs": np.arange(-0.15, 0.151, 0.015),
+    },
+    {
+        "mean_file": DATA_DIR / "soilw.10-200cm.mon.mean.nc",
+        "ltm_file":  DATA_DIR / "soilw.10-200cm.mon.ltm.1991-2020.nc",
+        "var":       "soilw",
+        "stem":      "soilw_10_200cm_anom",
+        "label":     "10–200 cm BGL",
+        "fill_levs": np.arange(-0.15, 0.151, 0.015),
+    },
+]
+
+for layer in _soilw_layers:
+    if not (layer["mean_file"].exists() and layer["ltm_file"].exists()):
+        print(f"Warning: {layer['mean_file'].name} or LTM not found — skipping {layer['label']}.")
+        continue
+
+    ds_mean = xr.open_dataset(layer["mean_file"])
+    ds_ltm  = xr.open_dataset(layer["ltm_file"], use_cftime=True)
+    soilw_mean = ds_mean[layer["var"]]
+    soilw_ltm  = ds_ltm[layer["var"]]
+
+    for month_num, month_name in MONTHS_SURFACE.items():
+
+        soilw_2016 = soilw_mean.sel(time=f"{YEAR}-{month_num:02d}").squeeze()
+        soilw_clim = soilw_ltm.isel(time=month_num - 1)
+        anom       = soilw_2016 - soilw_clim
+
+        data_c, lons_c, lats = prep_data(anom)
+
+        units = soilw_mean.attrs.get("units", "fraction")
+        title = f"Soil Moisture Anomaly {layer['label']} ({units}) — {month_name} {YEAR}"
+        cbar_label = f"Soil Moisture Anomaly ({units})"
+        fname = f"{layer['stem']}_{YEAR}_{month_num:02d}_{month_name.lower()}"
+
+        fig_na = plot_na_or_conus(data_c, lons_c, lats, layer["fill_levs"], CMAP_BRBG,
+                                  title, cbar_label,
+                                  corn_belt_feat=corn_belt_feature, zoom="na")
+        fig_na.savefig(OUT_DIR / f"{fname}_na.png", dpi=150, bbox_inches="tight", facecolor="white")
+        plt.close(fig_na)
+        print(f"Saved: {OUT_DIR / f'{fname}_na.png'}")
+
+        fig_conus = plot_na_or_conus(data_c, lons_c, lats, layer["fill_levs"], CMAP_BRBG,
+                                     title, cbar_label,
+                                     corn_belt_feat=corn_belt_feature, zoom="conus")
+        fig_conus.savefig(OUT_DIR / f"{fname}_conus.png", dpi=150, bbox_inches="tight", facecolor="white")
+        plt.close(fig_conus)
+        print(f"Saved: {OUT_DIR / f'{fname}_conus.png'}")
+
+    ds_mean.close()
+    ds_ltm.close()
+
+
 print("Done.")

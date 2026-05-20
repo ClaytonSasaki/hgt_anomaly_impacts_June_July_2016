@@ -14,8 +14,13 @@
 #     air.2m.mon.mean.nc           : 2m air temperature, all years
 #     air.2m.mon.ltm.1991-2020.nc  : 2m air temperature climatology
 #
-#     prate.sfc.mon.mean.nc        : precipitation rate, all years 
+#     prate.sfc.mon.mean.nc        : precipitation rate, all years
 #     prate.sfc.mon.ltm.1991-2020.nc : precipitation rate climatology
+#
+#     soilw.0-10cm.mon.mean.nc         : soil moisture 0-10 cm BGL, all years
+#     soilw.0-10cm.mon.ltm.1991-2020.nc  : soil moisture 0-10 cm climatology
+#     soilw.10-200cm.mon.mean.nc        : soil moisture 10-200 cm BGL, all years
+#     soilw.10-200cm.mon.ltm.1991-2020.nc : soil moisture 10-200 cm climatology
 #
 # Daily files (where monthly files won't work for our use) for
 #
@@ -42,12 +47,16 @@ wget -c -N -P "${DEST_DIR}" \
     "${BASE_MON_PRES}/hgt.mon.mean.nc" \
     "${BASE_MON_PRES}/hgt.mon.ltm.1991-2020.nc"
 
-echo "Downloading monthly mean 2m air temperature and surface precipitation rate..."
+echo "Downloading monthly mean 2m air temperature, precipitation rate, and soil moisture..."
 wget -c -N -P "${DEST_DIR}" \
     "${BASE_MON_SURF}/air.2m.mon.mean.nc" \
     "${BASE_MON_SURF}/air.2m.mon.ltm.1991-2020.nc" \
     "${BASE_MON_SURF}/prate.sfc.mon.mean.nc" \
-    "${BASE_MON_SURF}/prate.sfc.mon.ltm.1991-2020.nc"
+    "${BASE_MON_SURF}/prate.sfc.mon.ltm.1991-2020.nc" \
+    "${BASE_MON_SURF}/soilw.0-10cm.mon.mean.nc" \
+    "${BASE_MON_SURF}/soilw.0-10cm.mon.ltm.1991-2020.nc" \
+    "${BASE_MON_SURF}/soilw.10-200cm.mon.mean.nc" \
+    "${BASE_MON_SURF}/soilw.10-200cm.mon.ltm.1991-2020.nc"
 
 BASE_DAILY_SURF="https://downloads.psl.noaa.gov/Datasets/ncep.reanalysis/Dailies/surface_gauss"
 

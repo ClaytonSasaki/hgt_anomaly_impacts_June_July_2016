@@ -26,6 +26,14 @@ var SURF_VARS = [
         stem:    'mgdd_anom',
         caption: 'Blue = fewer modified growing degree days than normal &nbsp;|&nbsp; Red = more modified growing degree days than normal &nbsp;|&nbsp; Units: &deg;F&middot;days/month'
     },
+    {
+        stem:    'soilw_0_10cm_anom',
+        caption: 'Brown = drier than normal &nbsp;|&nbsp; Green = wetter than normal &nbsp;|&nbsp; Soil moisture 0–10 cm BGL &nbsp;|&nbsp; Units: fraction'
+    },
+    {
+        stem:    'soilw_10_200cm_anom',
+        caption: 'Brown = drier than normal &nbsp;|&nbsp; Green = wetter than normal &nbsp;|&nbsp; Soil moisture 10–200 cm BGL &nbsp;|&nbsp; Units: fraction'
+    },
 ];
 
 function updateSurfaceGrid() {

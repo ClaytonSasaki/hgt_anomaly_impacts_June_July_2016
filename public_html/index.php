@@ -119,6 +119,12 @@
                         <li><label class="dropdown-item d-flex gap-2">
                             <input type="checkbox" class="surf-var" value="mgdd_anom" data-label="MGDD"> Modified GDD
                         </label></li>
+                        <li><label class="dropdown-item d-flex gap-2">
+                            <input type="checkbox" class="surf-var" value="soilw_0_10cm_anom" data-label="Soil 0-10cm"> Soil Moisture 0–10 cm
+                        </label></li>
+                        <li><label class="dropdown-item d-flex gap-2">
+                            <input type="checkbox" class="surf-var" value="soilw_10_200cm_anom" data-label="Soil 10-200cm"> Soil Moisture 10–200 cm
+                        </label></li>
                     </ul>
                 </div>
 
