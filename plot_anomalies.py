@@ -384,4 +384,56 @@ else:
     print("Warning: heat days data not found — run compute_heat_days.py first.")
 
 
+# =========================================================================
+# STRESS DEGREE DAYS ANOMALY  (North America and CONUS)
+# =========================================================================
+
+_sdd_clim_path = DATA_DIR / "sdd_clim_1991-2020.nc"
+_sdd_2016_path = DATA_DIR / f"sdd_{YEAR}.nc"
+
+if _sdd_clim_path.exists() and _sdd_2016_path.exists():
+
+    # --- Load data ---
+    ds_sdd_clim = xr.open_dataset(_sdd_clim_path)
+    ds_sdd_2016 = xr.open_dataset(_sdd_2016_path)
+
+    # Contour levels
+    fill_levs_sdd = np.arange(-200, 201, 20)  # °F·days/month
+
+    for month_num, month_name in MONTHS_SURFACE.items():
+
+        # Get mean values for chosen month and calculate anomalies (°F·days)
+        sdd_2016 = ds_sdd_2016["sdd"].sel(month=month_num).squeeze()
+        sdd_clim = ds_sdd_clim["sdd"].sel(month=month_num).squeeze()
+        anom     = sdd_2016 - sdd_clim
+
+        # Update coordinates for plotting
+        data_c, lons_c, lats = prep_data(anom)
+
+        title = f"Stress Degree Days Anomaly (°F·days/month) — {month_name} {YEAR}"
+        fname = f"sdd_anom_{YEAR}_{month_num:02d}_{month_name.lower()}"
+
+        # Plot anomalies on map
+        # Blue = fewer stress degree days than normal, Red = more stress degree days than normal
+        fig_na = plot_na_or_conus(data_c, lons_c, lats, fill_levs_sdd, CMAP_RDBW,
+                                  title, "SDD Anomaly (°F·days/month)",
+                                  corn_belt_feat=corn_belt_feature, zoom="na")
+        fig_na.savefig(OUT_DIR / f"{fname}_na.png", dpi=150, bbox_inches="tight", facecolor="white")
+        plt.close(fig_na)
+        print(f"Saved: {OUT_DIR / f'{fname}_na.png'}")
+
+        fig_conus = plot_na_or_conus(data_c, lons_c, lats, fill_levs_sdd, CMAP_RDBW,
+                                     title, "SDD Anomaly (°F·days/month)",
+                                     corn_belt_feat=corn_belt_feature, zoom="conus")
+        fig_conus.savefig(OUT_DIR / f"{fname}_conus.png", dpi=150, bbox_inches="tight", facecolor="white")
+        plt.close(fig_conus)
+        print(f"Saved: {OUT_DIR / f'{fname}_conus.png'}")
+
+    ds_sdd_clim.close()
+    ds_sdd_2016.close()
+
+else:
+    print("Warning: SDD data not found — run compute_heat_days.py first.")
+
+
 print("Done.")

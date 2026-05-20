@@ -18,6 +18,10 @@ var SURF_VARS = [
         stem:    'tmax_heatdays_anom',
         caption: 'Blue = fewer days &gt;95&deg;F than normal &nbsp;|&nbsp; Red = more days &gt;95&deg;F than normal &nbsp;|&nbsp; Units: days/month'
     },
+    {
+        stem:    'sdd_anom',
+        caption: 'Blue = fewer stress degree days than normal &nbsp;|&nbsp; Red = more stress degree days than normal &nbsp;|&nbsp; Units: &deg;F&middot;days/month'
+    },
 ];
 
 function updateSurfaceGrid() {
